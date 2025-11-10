@@ -3,26 +3,23 @@ include('db.php');
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get email and password from the form
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Run SQL query
+    // Fetch user by email
     $query = "SELECT * FROM users WHERE email='$email'";
     $result = mysqli_query($conn, $query);
 
-    // Check if the query ran successfully
     if (!$result) {
-        die("Query failed: " . mysqli_error($conn)); // This helps you see SQL errors if any
+        die("Query failed: " . mysqli_error($conn));
     }
 
-    // Fetch user data
     $user = mysqli_fetch_assoc($result);
 
-    // Check if user exists and password matches
-    if ($user && $password == $user['password']) {
+    // ✅ Use password_verify to check hashed password
+    if ($user && password_verify($password, $user['password'])) {
         $_SESSION['username'] = $user['username'];
-        header("Location: home.php");
+        header("Location: index.php"); // or home.php if you use that
         exit();
     } else {
         echo "<script>alert('Invalid email or password');</script>";
