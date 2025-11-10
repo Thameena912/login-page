@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Fetch user by email
+    // Get user by email
     $query = "SELECT * FROM users WHERE email='$email'";
     $result = mysqli_query($conn, $query);
 
@@ -16,13 +16,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $user = mysqli_fetch_assoc($result);
 
-    // ✅ Use password_verify to check hashed password
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['username'] = $user['username'];
-        header("Location: index.php"); // or home.php if you use that
-        exit();
+    if ($user) {
+        // Verify the hashed password
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['username'] = $user['username'];
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "<script>alert('Invalid password');</script>";
+        }
     } else {
-        echo "<script>alert('Invalid email or password');</script>";
+        echo "<script>alert('No user found with that email');</script>";
     }
 }
 ?>
