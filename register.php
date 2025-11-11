@@ -2,11 +2,11 @@
 include('db.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
 
-    // ✅ Correct password hashing
+    // ✅ Hash password correctly
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     // ✅ Check if email already exists
@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (mysqli_num_rows($checkEmail) > 0) {
         echo "<script>alert('Email already registered!');</script>";
     } else {
-        // ✅ Insert hashed password
         $query = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')";
         if (mysqli_query($conn, $query)) {
             echo "<script>alert('Registration successful! Redirecting to login...'); window.location='login.php';</script>";
@@ -24,7 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
