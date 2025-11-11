@@ -3,10 +3,10 @@ include('db.php');
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
 
-    // Get user by email
+    // Fetch user by email
     $query = "SELECT * FROM users WHERE email='$email'";
     $result = mysqli_query($conn, $query);
 
@@ -17,16 +17,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = mysqli_fetch_assoc($result);
 
     if ($user) {
-        // Verify the hashed password
+        // ✅ Verify the hashed password
         if (password_verify($password, $user['password'])) {
             $_SESSION['username'] = $user['username'];
+            echo "<script>alert('Login Successful! Redirecting...');</script>";
             header("Location: index.php");
             exit();
         } else {
-            echo "<script>alert('Invalid password');</script>";
+            echo "<script>alert('Invalid password! Please try again.');</script>";
         }
     } else {
-        echo "<script>alert('No user found with that email');</script>";
+        echo "<script>alert('No user found with that email!');</script>";
     }
 }
 ?>
