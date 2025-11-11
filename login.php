@@ -17,17 +17,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = mysqli_fetch_assoc($result);
 
     if ($user) {
-        // ✅ Verify the hashed password
-        if (password_verify($password, $user['password'])) {
+        // Compare plain passwords
+        if ($password === $user['password']) {
             $_SESSION['username'] = $user['username'];
-            echo "<script>alert('Login Successful! Redirecting...');</script>";
+            echo "<script>alert('✅ Login Successful! Redirecting...');</script>";
             header("Location: index.php");
             exit();
         } else {
-            echo "<script>alert('Invalid password! Please try again.');</script>";
+            echo "<script>alert('❌ Invalid password! Please try again.');</script>";
         }
     } else {
-        echo "<script>alert('No user found with that email!');</script>";
+        echo "<script>alert('❌ No user found with that email!');</script>";
     }
 }
 ?>
@@ -41,10 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <div class="container">
-    <form class="form" method="POST">
+    <form class="form" method="POST" autocomplete="off">
         <h2>Login</h2>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <input type="email" name="email" placeholder="Email" required autocomplete="off">
+        <input type="password" name="password" placeholder="Password" required autocomplete="new-password">
         <button type="submit">Login</button>
         <p>Don’t have an account? <a href="register.php">Register</a></p>
     </form>
